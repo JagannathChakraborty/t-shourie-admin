@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { FaCloudUploadAlt, FaTimes, FaImage } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaTimes } from 'react-icons/fa';
 import './ImageUploader.css';
 
 const ImageUploader = ({ onUpload, category }) => {
