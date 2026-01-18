@@ -1,0 +1,43 @@
+:root {
+  /* Primary Colors */
+  --color-cream: #F8F3F2;
+  --color-black: #0B0508;
+  --color-beige: #F4E4CB;
+  --color-gold: #B99B6A;
+  --color-sand: #DBCEA9;
+  --color-maroon: #512721;
+  --color-brown: #744732;
+  --color-dark-maroon: #280E12;
+  --color-copper: #906945;
+  --color-gray: #575254;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--color-maroon) 0%, var(--color-dark-maroon) 100%);
+  --gradient-gold: linear-gradient(135deg, var(--color-gold) 0%, var(--color-copper) 100%);
+  --gradient-light: linear-gradient(135deg, var(--color-cream) 0%, var(--color-beige) 100%);
+  --gradient-dark: linear-gradient(135deg, var(--color-dark-maroon) 0%, var(--color-black) 100%);
+
+  /* Typography */
+  --font-primary: 'Playfair Display', serif;
+  --font-secondary: 'Poppins', sans-serif;
+
+  /* Transitions */
+  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s ease;
+
+  /* Shadows */
+  --shadow-soft: 0 10px 40px rgba(11, 5, 8, 0.1);
+  --shadow-medium: 0 20px 60px rgba(11, 5, 8, 0.15);
+  --shadow-strong: 0 30px 80px rgba(11, 5, 8, 0.2);
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 40px;
+  --radius-full: 50%;
+
+  /* Admin Specific */
+  --sidebar-width: 280px;
+  --header-height: 70px;
+}
