@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Header from '../../components/Header/Header';
+import API_BASE_URL from '../../config/api';
 import {
   FaCalendarAlt,
   FaChalkboardTeacher,
@@ -9,6 +10,7 @@ import {
   FaCamera,
   FaArrowRight,
   FaImage,
+  FaTrash,
 } from 'react-icons/fa';
 import './Dashboard.css';
 
@@ -19,17 +21,72 @@ const Dashboard = () => {
     achievements: 0,
     studio: 0,
   });
+  const [recentUploads, setRecentUploads] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    // Fetch stats from API - Replace with actual API call
-    // Simulated data
-    setStats({
-      events: 24,
-      classes: 18,
-      achievements: 32,
-      studio: 45,
-    });
+    // Fetch dashboard stats from API
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/dashboard/stats`);
+        if (response.ok) {
+          const data = await response.json(); // [{ category, count }]
+          const statsMap = { events: 0, classes: 0, achievements: 0, studio: 0 };
+          data.forEach((item) => {
+            statsMap[item.category] = item.count;
+          });
+          setStats(statsMap);
+        }
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+      }
+    };
+
+    // Fetch recent uploads from API
+    const fetchRecentUploads = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/dashboard/recent-uploads`);
+        if (response.ok) {
+          const data = await response.json(); // [{ id, name, category, date }]
+          setRecentUploads(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch recent uploads:', error);
+      }
+    };
+
+    fetchStats();
+    fetchRecentUploads();
   }, []);
+
+  const handleDelete = async (upload) => {
+    if (!window.confirm(`Are you sure you want to delete "${upload.name}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/gallery/${upload.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setRecentUploads((prev) => prev.filter((u) => u.id !== upload.id));
+        // Also update the stats count for the deleted category
+        setStats((prev) => ({
+          ...prev,
+          [upload.category]: Math.max(0, (prev[upload.category] || 0) - 1),
+        }));
+      } else {
+        console.error('Failed to delete image');
+      }
+    } catch (error) {
+      console.error('Failed to delete image:', error);
+    }
+  };
+
+  const filteredUploads = recentUploads.filter((upload) =>
+    upload.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const categories = [
     {
@@ -62,14 +119,6 @@ const Dashboard = () => {
     },
   ];
 
-  const recentUploads = [
-    { id: 1, name: 'Event Photo 1', category: 'Events', date: '2024-01-15' },
-    { id: 2, name: 'Class Photo 2', category: 'Classes', date: '2024-01-14' },
-    { id: 3, name: 'Achievement 3', category: 'Achievements', date: '2024-01-13' },
-    { id: 4, name: 'Studio Photo 4', category: 'Studio', date: '2024-01-12' },
-    { id: 5, name: 'Event Photo 5', category: 'Events', date: '2024-01-11' },
-  ];
-
   return (
     <div className="admin-layout">
       <Sidebar />
@@ -77,6 +126,7 @@ const Dashboard = () => {
         <Header
           title="Dashboard"
           subtitle="Welcome to T. Shourie Admin Panel"
+          onSearch={setSearchTerm}
         />
 
         <div className="dashboard-content">
@@ -137,7 +187,7 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentUploads.map((upload) => (
+                  {filteredUploads.map((upload) => (
                     <tr key={upload.id}>
                       <td>
                         <div className="upload-name">
@@ -150,10 +200,23 @@ const Dashboard = () => {
                       </td>
                       <td>{upload.date}</td>
                       <td>
-                        <button className="view-btn">View</button>
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDelete(upload)}
+                          title="Delete image"
+                        >
+                          <FaTrash /> Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
+                  {filteredUploads.length === 0 && (
+                    <tr>
+                      <td colSpan="4" style={{ textAlign: 'center', padding: '1rem', color: '#888' }}>
+                        {searchTerm ? 'No images match your search.' : 'No recent uploads.'}
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 import Login from './pages/Login/Login';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Events from './pages/Events/Events';
 import Classes from './pages/Classes/Classes';
@@ -61,6 +62,7 @@ function AppRoutes() {
           </PublicRoute>
         }
       />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route
         path="/dashboard"
         element={

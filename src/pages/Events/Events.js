@@ -3,54 +3,68 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import Header from '../../components/Header/Header';
 import ImageUploader from '../../components/ImageUploader/ImageUploader';
 import GalleryGrid from '../../components/GalleryGrid/GalleryGrid';
+import API_BASE_URL from '../../config/api';
 import './Events.css';
 
 const Events = () => {
   const [images, setImages] = useState([]);
   const [showCount, setShowCount] = useState(20);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    // Fetch images from API - Replace with actual API call
     fetchImages();
   }, []);
 
-  const fetchImages = () => {
+  const fetchImages = async () => {
     setLoading(true);
-    // Simulated data - Replace with actual API call
-    setTimeout(() => {
-      const dummyImages = Array.from({ length: 30 }, (_, i) => ({
-        id: `event-${i + 1}`,
-        url: `https://picsum.photos/400/400?random=${i + 1}`,
-        name: `Event Photo ${i + 1}`,
-        category: 'events',
-        uploadedAt: new Date().toISOString(),
-      }));
-      setImages(dummyImages);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/gallery?category=events`);
+      if (response.ok) {
+        const data = await response.json(); // [{ id, url, name, category, uploadedAt }]
+        setImages(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch event images:', error);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
-  const handleUpload = (files, category) => {
-    // Handle upload - Replace with actual API call
-    console.log('Uploading files:', files, 'to category:', category);
-    
-    // Simulate adding new images
-    const newImages = files.map((file, index) => ({
-      id: `new-${Date.now()}-${index}`,
-      url: file.preview,
-      name: file.file.name,
-      category: 'events',
-      uploadedAt: new Date().toISOString(),
-    }));
+  const handleUpload = async (files, category) => {
+    try {
+      const formData = new FormData();
+      files.forEach((file) => formData.append('files', file.file));
+      formData.append('category', 'events');
 
-    setImages((prev) => [...newImages, ...prev]);
+      const response = await fetch(`${API_BASE_URL}/api/admin/gallery/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const newImages = await response.json(); // [{ id, url, name, category, uploadedAt }]
+        setImages((prev) => [...newImages, ...prev]);
+      }
+    } catch (error) {
+      console.error('Failed to upload images:', error);
+    }
   };
 
-  const handleDelete = (ids) => {
-    // Handle delete - Replace with actual API call
-    console.log('Deleting images:', ids);
-    setImages((prev) => prev.filter((img) => !ids.includes(img.id)));
+  const handleDelete = async (ids) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/gallery/bulk-delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids }),
+      });
+
+      if (response.ok) {
+        setImages((prev) => prev.filter((img) => !ids.includes(img.id)));
+      }
+    } catch (error) {
+      console.error('Failed to delete images:', error);
+    }
   };
 
   return (
@@ -60,6 +74,7 @@ const Events = () => {
         <Header
           title="Events Gallery"
           subtitle="Manage event photos for the main website"
+          onSearch={setSearchTerm}
         />
 
         <div className="page-content">
@@ -79,7 +94,9 @@ const Events = () => {
               </div>
             ) : (
               <GalleryGrid
-                images={images}
+                images={images.filter((img) =>
+                  img.name.toLowerCase().includes(searchTerm.toLowerCase())
+                )}
                 onDelete={handleDelete}
                 showCount={showCount}
                 onShowCountChange={setShowCount}

@@ -12,8 +12,9 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotUsername, setForgotUsername] = useState('');
   const [forgotMessage, setForgotMessage] = useState('');
+  const [forgotError, setForgotError] = useState('');
 
   const { login, forgotPassword } = useAuth();
   const navigate = useNavigate();
@@ -37,12 +38,13 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setForgotMessage('');
+    setForgotError('');
 
     try {
-      const result = await forgotPassword(forgotEmail);
+      const result = await forgotPassword(forgotUsername);
       setForgotMessage(result.message);
     } catch (err) {
-      setForgotMessage('Error sending reset link. Please try again.');
+      setForgotError(err.message || 'Error sending reset link. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -184,7 +186,7 @@ const Login = () => {
             <div className="forgot-password-wrapper">
               <div className="form-header">
                 <h2>Forgot Password</h2>
-                <p>Enter your email to receive a reset link</p>
+                <p>Enter your username to receive a reset link via email</p>
               </div>
 
               {forgotMessage && (
@@ -193,17 +195,23 @@ const Login = () => {
                 </div>
               )}
 
+              {forgotError && (
+                <div className="error-message">
+                  <span>{forgotError}</span>
+                </div>
+              )}
+
               <form onSubmit={handleForgotPassword} className="forgot-form">
                 <div className="form-group">
-                  <label htmlFor="email">Email Address</label>
+                  <label htmlFor="forgot-username">Username</label>
                   <div className="input-wrapper">
                     <FaUser className="input-icon" />
                     <input
-                      type="email"
-                      id="email"
-                      placeholder="Enter your email"
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
+                      type="text"
+                      id="forgot-username"
+                      placeholder="Enter your username"
+                      value={forgotUsername}
+                      onChange={(e) => setForgotUsername(e.target.value)}
                       required
                     />
                   </div>
@@ -223,6 +231,7 @@ const Login = () => {
                   onClick={() => {
                     setShowForgotPassword(false);
                     setForgotMessage('');
+                    setForgotError('');
                   }}
                 >
                   Back to Login

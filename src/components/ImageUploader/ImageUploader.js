@@ -55,15 +55,16 @@ const ImageUploader = ({ onUpload, category }) => {
     if (selectedFiles.length === 0) return;
 
     setUploading(true);
-
-    // Simulate upload - Replace with actual API call
-    setTimeout(() => {
+    try {
       if (onUpload) {
-        onUpload(selectedFiles, category);
+        await onUpload(selectedFiles, category);
       }
       setSelectedFiles([]);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    } finally {
       setUploading(false);
-    }, 2000);
+    }
   };
 
   const onButtonClick = () => {

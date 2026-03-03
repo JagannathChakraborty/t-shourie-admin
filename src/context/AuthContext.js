@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 
 const AuthContext = createContext(null);
 
@@ -7,39 +8,37 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in (from localStorage)
-    const storedUser = localStorage.getItem('adminUser');
+    // Check if user is logged in (from localStorage or sessionStorage)
+    const storedUser =
+      localStorage.getItem('adminUser') ||
+      sessionStorage.getItem('adminUser');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
   }, []);
 
-  const login = (username, password, rememberMe) => {
-    // Dummy authentication - Replace with actual API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Demo credentials
-        if (username === 'admin' && password === 'admin123') {
-          const userData = {
-            username: username,
-            name: 'Admin User',
-            role: 'Administrator',
-          };
-          
-          if (rememberMe) {
-            localStorage.setItem('adminUser', JSON.stringify(userData));
-          } else {
-            sessionStorage.setItem('adminUser', JSON.stringify(userData));
-          }
-          
-          setUser(userData);
-          resolve(userData);
-        } else {
-          reject(new Error('Invalid username or password'));
-        }
-      }, 1000);
+  const login = async (username, password, rememberMe) => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
     });
+
+    if (!response.ok) {
+      throw new Error('Invalid username or password');
+    }
+
+    const userData = await response.json(); // { username, name, role }
+
+    if (rememberMe) {
+      localStorage.setItem('adminUser', JSON.stringify(userData));
+    } else {
+      sessionStorage.setItem('adminUser', JSON.stringify(userData));
+    }
+
+    setUser(userData);
+    return userData;
   };
 
   const logout = () => {
@@ -48,13 +47,20 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const forgotPassword = (email) => {
-    // Dummy forgot password - Replace with actual API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ message: 'Password reset link sent to your email' });
-      }, 1000);
+  const forgotPassword = async (username) => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username }),
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to send password reset email');
+    }
+
+    return data; // { message }
   };
 
   return (
