@@ -11,6 +11,7 @@ const Events = () => {
   const [showCount, setShowCount] = useState(20);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchImages();
@@ -69,12 +70,14 @@ const Events = () => {
 
   return (
     <div className="admin-layout">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <main className="admin-main">
         <Header
           title="Events Gallery"
           subtitle="Manage event photos for the main website"
           onSearch={setSearchTerm}
+          onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
+          isSidebarOpen={sidebarOpen}
         />
 
         <div className="page-content">

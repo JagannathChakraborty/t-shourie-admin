@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { FaSearch, FaBars, FaTimes } from 'react-icons/fa';
 import './Header.css';
 
-const Header = ({ title, subtitle, onSearch }) => {
+const Header = ({ title, subtitle, onSearch, onMenuToggle, isSidebarOpen }) => {
   const { user } = useAuth();
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const handleSearchChange = (e) => {
     if (onSearch) {
@@ -18,9 +17,9 @@ const Header = ({ title, subtitle, onSearch }) => {
       <div className="header-left">
         <button
           className="mobile-menu-btn"
-          onClick={() => setShowMobileMenu(!showMobileMenu)}
+          onClick={onMenuToggle}
         >
-          {showMobileMenu ? <FaTimes /> : <FaBars />}
+          {isSidebarOpen ? <FaTimes /> : <FaBars />}
         </button>
 
         <div className="header-title">

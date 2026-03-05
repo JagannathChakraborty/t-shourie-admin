@@ -23,6 +23,7 @@ const Dashboard = () => {
   });
   const [recentUploads, setRecentUploads] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     // Fetch dashboard stats from API
@@ -121,12 +122,14 @@ const Dashboard = () => {
 
   return (
     <div className="admin-layout">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <main className="admin-main">
         <Header
           title="Dashboard"
           subtitle="Welcome to T. Shourie Admin Panel"
           onSearch={setSearchTerm}
+          onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
+          isSidebarOpen={sidebarOpen}
         />
 
         <div className="dashboard-content">
