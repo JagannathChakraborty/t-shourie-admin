@@ -50,3 +50,18 @@
     padding: 1.5rem 1rem;
   }
 }
+
+@media (max-width: 480px) {
+  .page-content {
+    padding: 1rem 0.75rem;
+  }
+
+  .content-section .section-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .loading-state {
+    padding: 2rem 1rem;
+  }
+}

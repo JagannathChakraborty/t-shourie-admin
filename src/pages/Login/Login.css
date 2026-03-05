@@ -536,4 +536,12 @@
     gap: 1rem;
     align-items: flex-start;
   }
+
+  .login-branding {
+    display: none;
+  }
+
+  .input-wrapper input {
+    padding: 0.875rem 1rem 0.875rem 2.75rem;
+  }
 }
