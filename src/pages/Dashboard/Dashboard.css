@@ -8,10 +8,14 @@
   flex: 1;
   margin-left: var(--sidebar-width);
   min-height: 100vh;
+  max-width: calc(100% - var(--sidebar-width));
+  overflow-x: hidden;
 }
 
 .dashboard-content {
   padding: 2rem;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Stats Grid */
@@ -32,6 +36,7 @@
   transition: var(--transition-smooth);
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
 .stat-card:hover {
@@ -58,6 +63,7 @@
 .stat-icon {
   width: 60px;
   height: 60px;
+  min-width: 60px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-lg);
   display: flex;
@@ -68,6 +74,7 @@
 
 .stat-info {
   flex: 1;
+  min-width: 0;
 }
 
 .stat-count {
@@ -82,11 +89,15 @@
 .stat-label {
   font-size: 0.9rem;
   opacity: 0.9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-arrow {
   width: 36px;
   height: 36px;
+  min-width: 36px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-full);
   display: flex;
@@ -186,8 +197,9 @@
 .recent-uploads-table {
   background: var(--color-cream);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid var(--color-sand);
+  -webkit-overflow-scrolling: touch;
 }
 
 .recent-uploads-table table {
@@ -208,6 +220,7 @@
   color: var(--color-gray);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .recent-uploads-table td {
@@ -230,8 +243,16 @@
   gap: 0.75rem;
 }
 
+.upload-name span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
 .upload-name svg {
   color: var(--color-gold);
+  flex-shrink: 0;
 }
 
 .category-badge {
@@ -242,6 +263,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   border-radius: var(--radius-xl);
+  white-space: nowrap;
 }
 
 .delete-btn {
@@ -257,6 +279,7 @@
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
+  white-space: nowrap;
 }
 
 .delete-btn:hover {
@@ -278,12 +301,14 @@
 @media (max-width: 1024px) {
   .admin-main {
     margin-left: 80px;
+    max-width: calc(100% - 80px);
   }
 }
 
 @media (max-width: 768px) {
   .admin-main {
     margin-left: 0;
+    max-width: 100%;
   }
 
   .dashboard-content {
@@ -292,14 +317,31 @@
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .stat-card {
+    padding: 1.25rem 1rem;
+    gap: 1rem;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    font-size: 1.25rem;
+  }
+
+  .stat-count {
+    font-size: 1.75rem;
+  }
+
+  .stat-arrow {
+    display: none;
   }
 
   .quick-actions {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .recent-uploads-table {
-    overflow-x: auto;
   }
 
   .recent-uploads-table table {
@@ -313,19 +355,22 @@
   }
 
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
   }
 
   .stat-card {
-    padding: 1rem;
-    gap: 1rem;
+    padding: 0.875rem;
+    gap: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .stat-icon {
-    width: 45px;
-    height: 45px;
-    font-size: 1.25rem;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 1.1rem;
   }
 
   .stat-count {
@@ -333,12 +378,7 @@
   }
 
   .stat-label {
-    font-size: 0.8rem;
-  }
-
-  .stat-arrow {
-    width: 30px;
-    height: 30px;
+    font-size: 0.75rem;
   }
 
   .quick-actions {
@@ -347,22 +387,27 @@
   }
 
   .quick-action-card {
-    padding: 1.25rem 1rem;
+    padding: 1.25rem 0.75rem;
     gap: 0.75rem;
   }
 
   .quick-action-card .action-icon {
-    width: 45px;
-    height: 45px;
-    font-size: 1.25rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
   }
 
   .quick-action-card span {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .dashboard-section .section-title {
     font-size: 1.1rem;
+  }
+
+  .section-header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .recent-uploads-table th,
@@ -378,5 +423,24 @@
   .delete-btn {
     padding: 0.4rem 0.75rem;
     font-size: 0.75rem;
+  }
+
+  .upload-name span {
+    max-width: 120px;
+  }
+}
+
+@media (max-width: 360px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr 1fr;
   }
 }
