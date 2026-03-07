@@ -65,7 +65,7 @@ const Login = () => {
               <img src="/logo.png" alt="T. Shourie" className="logo-img" />
               <div className="logo-text">
                 <span className="logo-main">T. Shourie</span>
-                <span className="logo-sub">The School of Music</span>
+                <span className="logo-sub">School of Music</span>
               </div>
             </div>
 
