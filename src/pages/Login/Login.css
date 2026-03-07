@@ -449,25 +449,6 @@
   color: var(--color-cream);
 }
 
-.demo-credentials {
-  margin-top: 2rem;
-  padding: 1rem;
-  background: var(--color-beige);
-  border-radius: var(--radius-md);
-  text-align: center;
-}
-
-.demo-credentials p {
-  font-size: 0.8rem;
-  color: var(--color-gray);
-  margin-bottom: 0.25rem;
-}
-
-.demo-credentials span {
-  font-size: 0.85rem;
-  color: var(--color-maroon);
-  font-weight: 500;
-}
 
 /* Responsive */
 @media (max-width: 1024px) {

@@ -176,11 +176,6 @@ const Login = () => {
                   )}
                 </button>
               </form>
-
-              <div className="demo-credentials">
-                <p>Demo Credentials:</p>
-                <span>Username: admin | Password: admin123</span>
-              </div>
             </div>
           ) : (
             <div className="forgot-password-wrapper">
